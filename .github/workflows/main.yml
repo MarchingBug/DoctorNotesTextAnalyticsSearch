@@ -9,7 +9,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: USCSAdoctorNotesPoc
-  AZURE_WEBAPP_PATH: './web-app/CognitiveSearch.UI/'
+  AZURE_WEBAPP_PATH: './web-app'
   DOTNET_VERSION: '3.1.302'
 
 jobs:
@@ -22,13 +22,8 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Restore dependencies
-      run: 
-        dotnet restore ./web-app/
-        dotnet restore ./web-app/CognitiveSearch.UI/CognitiveSearch.UI.csproj
-      
+        dotnet-version: ${{ env.DOTNET_VERSION }}       
+         
     - name: Build
       run: 
          dotnet build --configuration release
