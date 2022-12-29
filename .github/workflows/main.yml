@@ -25,7 +25,9 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         
     - name: Restore dependencies
-      run: dotnet restore
+      run: 
+        dotnet restore ./web-app/
+        dotnet restore ./web-app/CognitiveSearch.UI/CognitiveSearch.UI.csproj
       
     - name: Build
       run: 
