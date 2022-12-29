@@ -26,7 +26,7 @@ jobs:
          
     - name: Build
       run: 
-         dotnet build --configuration release
+         dotnet build  '${{ env.AZURE_WEBAPP_PATH }}' --configuration release
          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PATH }}/publish'
       
     - name: Deploy to App Service
