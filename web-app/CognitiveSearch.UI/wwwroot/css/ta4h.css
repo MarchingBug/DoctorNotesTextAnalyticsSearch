@@ -1,0 +1,225 @@
+.ta4h-result-section {
+    --CLASSIFICATION-ADMINISTRATIVEEVENT  :#4682b4;
+    --CLASSIFICATION-AGE                  :#f0e68c;
+    --CLASSIFICATION-ALLERGEN             :#00cc8c;
+    --CLASSIFICATION-BODYSTRUCTURE        :#0000ff;
+    --CLASSIFICATION-CAREENVIRONMENT      :#123456;
+    --CLASSIFICATION-CONDITIONSCALE       :#808080;
+    --CLASSIFICATION-CONDITIONQUALIFIER   :#00cdcd;
+    --CLASSIFICATION-COURSE               :#ff69b4;
+    --CLASSIFICATION-DIAGNOSIS            :#8b0a50;
+    --CLASSIFICATION-DATE                 :#ff1493;
+    --CLASSIFICATION-DIRECTION            :#8b8b00;
+    --CLASSIFICATION-DOSAGE               :#ff4500;
+    --CLASSIFICATION-EXAMINATIONNAME      :#ee7600;
+    --CLASSIFICATION-EXPRESSION           :#da70d6;
+    --CLASSIFICATION-FAMILYRELATION       :#8b7355;
+    --CLASSIFICATION-FREQUENCY            :#1e90ff;
+    --CLASSIFICATION-GENDER               :#00008b;
+    --CLASSIFICATION-GENEORPROTEIN        :#dc143c;
+    --CLASSIFICATION-HEALTHCAREPROFESSION :#ffd700;
+    --CLASSIFICATION-MEASUREMENTUNIT      :#daa520;
+    --CLASSIFICATION-MEASUREMENTVALUE     :#cd1076;
+    --CLASSIFICATION-MEDICATIONCLASS      :#00ffff;
+    --CLASSIFICATION-MEDICATIONFORM       :#bc8f8f;
+    --CLASSIFICATION-MEDICATIONNAME       :#9932cc;
+    --CLASSIFICATION-MEDICATIONROUTE      :#7fff00;
+    --CLASSIFICATION-MUTATIONTYPE         :#add8e6;
+    --CLASSIFICATION-RELATIONALOPERATOR   :#228b22;
+    --CLASSIFICATION-SYMPTOMORSIGN        :#00ff00;
+    --CLASSIFICATION-TIME                 :#8b4500;
+    --CLASSIFICATION-TREATMENTNAME        :#66cd00;
+    --CLASSIFICATION-VARIANT              :#deb887;
+}
+
+.ta4h-result-section {
+    position: relative;
+    float: left;
+    border: none;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    z-index: 11;
+    user-select: none;
+    padding: 0;
+}
+
+.ta4h-result-section .ta4h-result-text {
+    float: left;
+    padding: 20px 20px 20px 40px;
+    margin: 0;
+    overflow: scroll;
+    overflow-x: hidden;
+    position:relative;
+    height: 100%;
+    z-index: 9999;
+}
+
+.ta4h-result-section .ta4h-result-text::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.ta4h-result-section .ta4h-result-text::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+/* Handle */
+.ta4h-result-section .ta4h-result-text::-webkit-scrollbar-thumb {
+    background: #0071ca;
+    border-radius: 10px;
+}
+
+.ta4h-result-section .ta4h-result-text .line {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ta4h-result-section .ta4h-result-text .line .word{
+    display: inline-block;
+    margin: 20px 5px;
+    height: 44px;
+}
+
+.ta4h-result-section .ta4h-result-text .line .word .text {
+    text-align: center;
+}
+
+.ta4h-result-section .ta4h-result-text svg path {
+    stroke-width: 3;
+    opacity: 0.1;
+    stroke: black;
+    transition: stroke 0.2s, opacity 0.2s, stroke-width 0.2s;
+    cursor: pointer;
+}
+
+.ta4h-result-section .ta4h-result-text svg path:hover {
+    opacity: 1;
+    stroke: #0071ca;
+}
+
+.ta4h-result-section .ta4h-result-text .relation-type {
+    opacity: 0;
+    transition: opacity 0.5s;
+    font-size: 14px;
+    font-weight: 700;
+    fill: #0071ca;
+}
+
+.ta4h-result-section .ta4h-result-text path:hover + .relation-type {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ta4h-result-section .ta4h-result-text .entity {
+    position: relative;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .text {
+    font-weight: bold;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .entity-line {
+    height: 5px;
+    bottom: -4px;
+    left:0;
+    right: 0;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+}
+
+
+.ta4h-result-section .ta4h-result-text .entity .entity-type {
+    font-weight: 700;
+    font-size: 12px;
+    text-align: center;
+    line-height: 14px;
+    letter-spacing: 0;
+}
+
+.ta4h-result-section .ta4h-result-text .entity {
+    cursor: pointer;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .linked {
+    position: absolute;
+    top: 0;
+    right: -10px;
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .linking-div {
+    display: none;
+    position: absolute;
+    left: 50%;
+    min-width: 10vw;
+    max-width: 15vw;
+    margin-top: -12px;
+    transform: translateX(-50%);
+    border: 1px solid gray;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 11px;
+    background-color: #fafefe;
+    z-index: 100;
+    text-align: left;
+}
+
+.ta4h-result-section .ta4h-result-text .linking-div .linking-div-item {
+    outline: 1px solid gray;
+    display: inline-block;
+    margin: 2px 4px
+}
+
+.ta4h-result-section .ta4h-result-text .linking-div .linking-div-item .linking-div-item-name{
+    display: inline-block;
+    padding: 2px 4px;
+    background-color: #eaeaea;
+    font-weight: 600
+}
+
+.ta4h-result-section .ta4h-result-text .linking-div .linking-div-item .linking-div-item-value {
+    display: inline-block;
+    padding: 2px 4px;
+}
+
+.ta4h-result-section .ta4h-result-text .entity:hover .linking-div {
+    display: block;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .text .tag {
+    background-color: #f0f8ff;
+    color:black;
+    display: inline-block;
+    margin: 2px 0px 2px 10px;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 14px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid black;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .text .tag.tag-certainty {
+    background-color: red;
+    color: white;
+    font-weight: 700;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .text .tag.tag-conditionality {
+    background-color: #b60ee8;
+    color: white;
+    font-weight: 700;
+}
+
+.ta4h-result-section .ta4h-result-text .entity .text .tag.tag-association {
+    background-color: #f7a71e;
+    color: white;
+    font-weight: 700;
+}
+
+.ta4h-result-section .ta4h-result-text .ta4h-result-section .entity.active .text{
+    background-color: yellow;
+    border-radius: 10px;
+}

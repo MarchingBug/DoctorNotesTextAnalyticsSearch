@@ -1,0 +1,481 @@
+{
+    "name": "azuresql-skillset",
+  "description": "Skillset created from the portal. skillsetName: azuresql-skillset; contentField: noteText; enrichmentGranularity: document; knowledgeStoreStorageAccount: doctocnoteshealthentitye;",
+  "skills": [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.PIIDetectionSkill",
+      "name": "Identify PII",
+      "description": "",
+      "context": "/document/noteId",
+      "defaultLanguageCode": "en",
+      "minimumPrecision": 0.5,
+      "maskingMode": "replace",
+      "maskingCharacter": "*",
+      "modelVersion": "",
+      "piiCategories": [],
+      "domain": "none",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/noteText"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "piiEntities",
+          "targetName": "piiEntities"
+        },
+        {
+          "name": "maskedText",
+          "targetName": "maskedText"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.V3.EntityRecognitionSkill",
+      "name": "#1",
+      "description": null,
+      "context": "/document/noteText",
+      "categories": [
+        "Skill",
+        "URL",
+        "IPAddress",
+        "PhoneNumber",
+        "Person",
+        "Event",
+        "Quantity",
+        "Location",
+        "Product",
+        "Email",
+        "Address",
+        "PersonType",
+        "DateTime",
+        "Organization"
+      ],
+      "defaultLanguageCode": "en",
+      "minimumPrecision": null,
+      "modelVersion": null,
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/noteText"
+        },
+        {
+          "name": "languageCode",
+          "source": "/document/language"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "persons",
+          "targetName": "people"
+        },
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        {
+          "name": "locations",
+          "targetName": "locations"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+      "name": "#2",
+      "description": null,
+      "context": "/document/noteText",
+      "defaultLanguageCode": "en",
+      "maxKeyPhraseCount": null,
+      "modelVersion": null,
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/noteText"
+        },
+        {
+          "name": "languageCode",
+          "source": "/document/language"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "keyPhrases",
+          "targetName": "keyphrases"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.LanguageDetectionSkill",
+      "name": "#3",
+      "description": null,
+      "context": "/document",
+      "defaultCountryHint": null,
+      "modelVersion": null,
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/noteText"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "languageCode",
+          "targetName": "language"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+      "name": "#4",
+      "description": null,
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "mrn",
+          "source": "/document/mrn"
+        },
+        {
+          "name": "recordStatus",
+          "source": "/document/recordStatus"
+        },
+        {
+          "name": "noteId",
+          "source": "/document/noteId"
+        },
+        {
+          "name": "dateOfService",
+          "source": "/document/dateOfService"
+        },
+        {
+          "name": "noteText",
+          "source": "/document/noteText"
+        },
+        {
+          "name": "dxCodeList",
+          "source": "/document/dxCodeList"
+        },
+        {
+          "name": "encounterType",
+          "source": "/document/encounterType"
+        },
+        {
+          "name": "noteType",
+          "source": "/document/noteType"
+        },
+        {
+          "name": "creatingProvider",
+          "source": "/document/creatingProvider"
+        },
+        {
+          "name": "signingProvider",
+          "source": "/document/signingProvider"
+        },
+        {
+          "name": "signingDate",
+          "source": "/document/signingDate"
+        },
+        {
+          "name": "cosignProvider",
+          "source": "/document/cosignProvider"
+        },
+        {
+          "name": "cosignDate",
+          "source": "/document/cosignDate"
+        },
+        {
+          "name": "encID",
+          "source": "/document/encID"
+        },
+        {
+          "name": "CreatingProviderId",
+          "source": "/document/CreatingProviderId"
+        },
+        {
+          "name": "SigningProviderId",
+          "source": "/document/SigningProviderId"
+        },
+        {
+          "name": "keyPhrases",
+          "source": "/document/noteText/keyphrases/*"
+        },
+        {
+          "name": "languageCode",
+          "source": "/document/language"
+        },
+        {
+          "name": "Entities",
+          "sourceContext": "/document/noteText/entities/*",
+          "inputs": [
+            {
+              "name": "Entity",
+              "source": "/document/noteText/entities/*/name"
+            },
+            {
+              "name": "EntityType",
+              "source": "/document/noteText/entities/*/type"
+            },
+            {
+              "name": "EntitySubType",
+              "source": "/document/noteText/entities/*/subType"
+            },
+            {
+              "name": "Url",
+              "source": "/document/noteText/entities/*/wikipediaUrl"
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "targetName": "objectprojection"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+      "name": "#5",
+      "description": null,
+      "context": "/document",
+      "inputs": [
+        {
+          "name": "mrn",
+          "source": "/document/mrn"
+        },
+        {
+          "name": "recordStatus",
+          "source": "/document/recordStatus"
+        },
+        {
+          "name": "noteId",
+          "source": "/document/noteId"
+        },
+        {
+          "name": "dateOfService",
+          "source": "/document/dateOfService"
+        },
+        {
+          "name": "noteText",
+          "source": "/document/noteText"
+        },
+        {
+          "name": "dxCodeList",
+          "source": "/document/dxCodeList"
+        },
+        {
+          "name": "encounterType",
+          "source": "/document/encounterType"
+        },
+        {
+          "name": "noteType",
+          "source": "/document/noteType"
+        },
+        {
+          "name": "creatingProvider",
+          "source": "/document/creatingProvider"
+        },
+        {
+          "name": "signingProvider",
+          "source": "/document/signingProvider"
+        },
+        {
+          "name": "signingDate",
+          "source": "/document/signingDate"
+        },
+        {
+          "name": "cosignProvider",
+          "source": "/document/cosignProvider"
+        },
+        {
+          "name": "cosignDate",
+          "source": "/document/cosignDate"
+        },
+        {
+          "name": "encID",
+          "source": "/document/encID"
+        },
+        {
+          "name": "CreatingProviderId",
+          "source": "/document/CreatingProviderId"
+        },
+        {
+          "name": "SigningProviderId",
+          "source": "/document/SigningProviderId"
+        },
+        {
+          "name": "keyPhrases",
+          "source": "/document/noteText/keyphrases/*"
+        },
+        {
+          "name": "languageCode",
+          "source": "/document/language"
+        },
+        {
+          "name": "Entities",
+          "sourceContext": "/document/noteText/entities/*",
+          "inputs": [
+            {
+              "name": "Entity",
+              "source": "/document/noteText/entities/*/name"
+            },
+            {
+              "name": "EntityType",
+              "source": "/document/noteText/entities/*/type"
+            },
+            {
+              "name": "EntitySubType",
+              "source": "/document/noteText/entities/*/subType"
+            },
+            {
+              "name": "Url",
+              "source": "/document/noteText/entities/*/wikipediaUrl"
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "targetName": "tableprojection"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+      "name": "InvokeTAHealthExtraction",
+      "description": "Custom skill to call the Microsoft Text Analytics Health entity extraction",
+      "context": "/document/noteId",
+      "uri": "https://YOUR_AZURE_FUNCTION_APP_NAME.azurewebsites.net/api/InvokeHealthEntityExtraction?code=YOUR_AUTHENICATION_CODE TODO",
+      "httpMethod": "POST",
+      "timeout": "PT30S",
+      "batchSize": 2,
+      "degreeOfParallelism": 1,
+      "inputs": [
+        {
+          "name": "noteText",
+          "source": "/document/noteText"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "bodyStructure",
+          "targetName": "bodyStructure"
+        },
+        {
+          "name": "conditionQualifier",
+          "targetName": "conditionQualifier"
+        },
+        {
+          "name": "diagnosis",
+          "targetName": "diagnosis"
+        },
+        {
+          "name": "direction",
+          "targetName": "direction"
+        },
+        {
+          "name": "examinationName",
+          "targetName": "examinationName"
+        },
+        {
+          "name": "examinationRelation",
+          "targetName": "examinationRelation"
+        },
+        {
+          "name": "familyRelation",
+          "targetName": "familyRelation"
+        },
+        {
+          "name": "gender",
+          "targetName": "gender"
+        },
+        {
+          "name": "gene",
+          "targetName": "gene"
+        },
+        {
+          "name": "medicationClass",
+          "targetName": "medicationClass"
+        },
+        {
+          "name": "medicationName",
+          "targetName": "medicationName"
+        },
+        {
+          "name": "routeOrMode",
+          "targetName": "routeOrMode"
+        },
+        {
+          "name": "symptomOrSign",
+          "targetName": "symptomOrSign"
+        },
+        {
+          "name": "treatmentName",
+          "targetName": "treatmentName"
+        },
+        {
+          "name": "variant",
+          "targetName": "variant"
+        },
+        {
+          "name": "TextAnalyticsForDisplay",
+          "targetName": "TextAnalyticsForDisplay"
+        }
+      ],
+      "httpHeaders": {}
+    }
+  ],
+  "cognitiveServices": {
+    "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+    "description": "This is a Cognitive Services all-in-one key.",
+    "key": "YOUR_COGNITIVE_SERVICES_KEY TODO"
+  },
+  "knowledgeStore": {
+    "storageConnectionString": "YOUR_STORAGE_ACCOUNT_CONNECTION_STRING TODO",
+    "identity": null,
+    "projections": [
+      {
+        "tables": [
+          {
+            "tableName": "azuresqlSkillsetDocument",
+            "referenceKeyName": null,
+            "generatedKeyName": "Documentid",
+            "source": "/document/tableprojection",
+            "sourceContext": null,
+            "inputs": []
+          },
+          {
+            "tableName": "azuresqlSkillsetKeyPhrases",
+            "referenceKeyName": null,
+            "generatedKeyName": "KeyPhrasesid",
+            "source": null,
+            "sourceContext": "/document/tableprojection/keyPhrases/*",
+            "inputs": [
+              {
+                "name": "keyphrases",
+                "source": "/document/tableprojection/keyPhrases/*",
+                "sourceContext": null,
+                "inputs": []
+              }
+            ]
+          }
+        ],
+        "objects": [
+          {
+            "storageContainer": "cognitive-search-files",
+            "referenceKeyName": null,
+            "generatedKeyName": "cognitive-search-filesKey",
+            "source": "/document/objectprojection",
+            "sourceContext": null,
+            "inputs": []
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "synthesizeGeneratedKeyName": true
+    }
+  },
+  "encryptionKey": null
+}

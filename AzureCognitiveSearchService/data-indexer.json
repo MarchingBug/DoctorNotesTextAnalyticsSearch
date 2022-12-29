@@ -1,0 +1,125 @@
+{
+  "@odata.context": "https://doctor-notes-poc.search.windows.net/$metadata#indexers/$entity",
+  "@odata.etag": "\"0x8DAE45C99EDD67C\"",
+  "name": "azuresql-indexer",
+  "description": "",
+  "dataSourceName": "doctor-notes-poc",
+  "skillsetName": "azuresql-skillset",
+  "targetIndexName": "azuresql-index",
+  "disabled": null,
+  "schedule": null,
+  "parameters": {
+    "batchSize": null,
+    "maxFailedItems": 0,
+    "maxFailedItemsPerBatch": 0,
+    "base64EncodeKeys": null,
+    "configuration": {}
+  },
+  "fieldMappings": [
+    {
+      "sourceFieldName": "noteId",
+      "targetFieldName": "noteId",
+      "mappingFunction": null
+    }
+  ],
+  "outputFieldMappings": [
+    {
+      "sourceFieldName": "/document/noteText/people",
+      "targetFieldName": "people"
+    },
+    {
+      "sourceFieldName": "/document/noteText/organizations",
+      "targetFieldName": "organizations"
+    },
+    {
+      "sourceFieldName": "/document/noteText/locations",
+      "targetFieldName": "locations"
+    },
+    {
+      "sourceFieldName": "/document/noteText/keyphrases",
+      "targetFieldName": "keyphrases"
+    },
+    {
+      "sourceFieldName": "/document/language",
+      "targetFieldName": "language"
+    },
+    {
+      "sourceFieldName": "/document/creatingProvider",
+      "targetFieldName": "creatingProvider"
+    },
+    {
+      "sourceFieldName": "/document/signingProvider",
+      "targetFieldName": "signingProvider"
+    },
+    {
+      "sourceFieldName": "/document/noteId/bodyStructure",
+      "targetFieldName": "bodyStructure"
+    },
+    {
+      "sourceFieldName": "/document/noteId/conditionQualifier",
+      "targetFieldName": "conditionQualifier"
+    },
+    {
+      "sourceFieldName": "/document/noteId/diagnosis",
+      "targetFieldName": "diagnosis"
+    },
+    {
+      "sourceFieldName": "/document/noteId/direction",
+      "targetFieldName": "direction"
+    },
+    {
+      "sourceFieldName": "/document/noteId/examinationName",
+      "targetFieldName": "examinationName"
+    },
+    {
+      "sourceFieldName": "/document/noteId/examinationRelation",
+      "targetFieldName": "examinationRelation"
+    },
+    {
+      "sourceFieldName": "/document/noteId/familyRelation",
+      "targetFieldName": "familyRelation"
+    },
+    {
+      "sourceFieldName": "/document/noteId/gender",
+      "targetFieldName": "gender"
+    },
+    {
+      "sourceFieldName": "/document/noteId/gene",
+      "targetFieldName": "gene"
+    },
+    {
+      "sourceFieldName": "/document/noteId/medicationClass",
+      "targetFieldName": "medicationClass"
+    },
+    {
+      "sourceFieldName": "/document/noteId/medicationName",
+      "targetFieldName": "medicationName"
+    },
+    {
+      "sourceFieldName": "/document/noteId/routeOrMode",
+      "targetFieldName": "routeOrMode"
+    },
+    {
+      "sourceFieldName": "/document/noteId/symptomOrSign",
+      "targetFieldName": "symptomOrSign"
+    },
+    {
+      "sourceFieldName": "/document/noteId/treatmentName",
+      "targetFieldName": "treatmentName"
+    },
+    {
+      "sourceFieldName": "/document/noteId/variant",
+      "targetFieldName": "variant"
+    },
+    {
+      "sourceFieldName": "/document/noteId/TextAnalyticsForDisplay",
+      "targetFieldName": "TextAnalyticsForDisplay"
+    },
+    {
+      "sourceFieldName": "/document/noteId/maskedText",
+      "targetFieldName": "maskedText"
+    }
+  ],
+  "cache": null,
+  "encryptionKey": null
+}
