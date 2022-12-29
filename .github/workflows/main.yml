@@ -9,7 +9,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: USCSAdoctorNotesPoc
-  AZURE_WEBAPP_PATH: './web-app/'
+  AZURE_WEBAPP_PATH: './web-app/CognitiveSearch.UI/'
   DOTNET_VERSION: '3.1.302'
 
 jobs:
