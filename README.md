@@ -10,7 +10,7 @@ If you simply want to show this code in a running instance, feel free to use <ht
 
 ## Purpose
 
-Give doctors the ability to extract and find meaningful patient data from their notes, to either have a larger view for a patient, to find patterns or for research.  How can we use AI to better understand to achieve this goal?  In this code, we take a sample set of fake doctor notes and apply several machine learning techniques (name entity recognition of medical terms, finding semantically similar words, and knowledge graphs) medical professionals better find and make sense of the research they need.  
+Give doctors the ability to extract and find meaningful patient data from their notes, to either have a larger view for a patient, to find patterns or for research.  How can we use AI to better understand to achieve this goal?  In this code, we take a sample set of fake doctor notes and apply several machine learning techniques (name entity recognition of medical terms, finding semantically similar words, and knowledge graphs) providing medical professionals a better way to find and make sense of the research they need.  
 
 ## Assets
 
@@ -72,9 +72,9 @@ This project should take about 4 hours to complete
 1. [Azure account - login or create one](#task-1---azure-account)
 2. [Create a resource group](#task-2---create-a-resource-group)
 3. [Import database package](#task-3---import-database-package)
-4. [Implement Text Analytics For Health](#task-4---implement-text-analytics-for-health)
-5. [Deploy InvokeHealthEntityExtraction Azure function](#task-5---deploy-invokehealthentityextraction-azure-function)
-6. [Create a Storage Account](#task-6---create-a-storage-account)
+4. [Create a Storage Account](#task-4---create-a-storage-account)
+5. [Implement Text Analytics For Health](#task-5---implement-text-analytics-for-health-container)
+6. [Deploy InvokeHealthEntityExtraction Azure function](#task-6---deploy-invokehealthentityextraction-azure-function)
 7. [Create Azure search service](#task-7---create-azure-search-service)
 8. [Run Notebook to configure Indexes and Data for Azure Search](#task-8---run-notebooks-to-create-indexes-on-azure-search)
 9. [Deploy Website](#task-9---deploy-web-application)
@@ -83,17 +83,22 @@ This project should take about 4 hours to complete
 
 First, you will need an Azure account.  If you don't already have one, you can start a free trial of Azure [here](https://azure.microsoft.com/free/).  
 
+Log into the [Azure Portal](https://azure.portal.com) using your credentials
+
 ___
 
 ### Task 2 - Create a resource group
 
 If you are new to Azure,a resource group is a container that holds related resources for an Azure solution. The resource group can include all the resources for the solution, or only those resources that you want to manage as a group, click [here](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups) to learn how to create a group
 
+> Write the name of your resource group on a text file, we will need it later
 ___
 
 ### Task 3 - Import database package
+
  Upload the file doctor-note-poc-bacpac located under the folder data-files to a storage account in your subscription.
   Import the database package to a serverless database, for more information on how to do this click [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/database-import?view=azuresql&tabs=azure-powershell).
+  
 <details>
   <summary>   If you have never done this expand this section for detailed steps  </summary>
 
@@ -162,15 +167,29 @@ Select * from DoctorNotes
 
 </details>
 
+> Write the name of your sql server, database, username and password on a text file, we will need it later
+
 ___
 
-### Task 4 - Implement Text Analytics For Health Container
+### Task 4 - Create a Storage Account
+
+Create a storage account and get the connection string, you will need this connection string for the next steps. If you have never done that, [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) is the documentation to do it.
+
+Once your storage account is created, navigate to the storage account and create a container named __doctor-notes-search__
+
+> Write the name of your storage account, get the connection string and access key on the same text file, we will need it later
+
+___
+
+### Task 5 - Implement Text Analytics For Health Container
 
 Our implementation uses the [Text Analytics for Health](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/how-tos/text-analytics-for-health?tabs=ner) container for medical entity extraction.  Once you have received access, you will need to set up the container as instructed in their README.
 
+> Write your container name on a text file, you wll need it later
+
 ___
 
-### Task 5 - Deploy InvokeHealthEntityExtraction Azure function
+### Task 6 - Deploy InvokeHealthEntityExtraction Azure function
 
 Then, you will need to update the InvokeHealthEntityExtraction Azure function with the location of your running container.  You will also need to download a file umls_concept_dict.pickle that is too big to host on GitHub, which will allow lookup of [UMLS](https://www.nlm.nih.gov/research/umls/index.html) entities.  
 
@@ -215,19 +234,16 @@ To update function's configuration parameters, in the Azure portal navigate to y
 
 ```
 
-Next Click "Functions" in the left-hand sidebar.  Then click on each function name,  click "Get Function Url" at the top of the page.  Copy that value to a text editor for each function; you will need it later.  
+Next Click "Functions" in the left-hand sidebar.  Then click on the function name,  click "Get Function Url" at the top of the page.  
 
-### Task 6 - Create a Storage Account
-
-Create a storage account and get the connection string, you will need this connection string for the next steps. If you have never done that, [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) is the documentation to do it.
-
-> __Once your storage account is created, navigate to the storage account and create a container named doctor-notes-search__
-
+> Copy that value of the function URL to the text file, you will need it later.  
 ___
 
 ### Task 7 - Create Azure search service
 
 Create a new Azure search service using the Azure portal at <https://portal.azure.com/#create/Microsoft.Search>.  Select your Azure subscription.  Use the previously created resource group. You will need a globally-unique URL as the name of your search service (try something like "doctonotes-search-" plus your name, organization, or numbers).  Finally, choose a nearby location to host your search service - please remember the location that you chose, as your Cognitive Services instance will need to be based in the same location.  Click "Review + create" and then (after validation) click "Create" to instantiate and deploy the service.
+
+> Copy that value of the Azure Service URL, service name and service key to the text file, you will need it later.  
 
 ___
 
@@ -235,25 +251,23 @@ ___
 
 After deployment of Azure Search service is complete, click "Go to resource" to navigate to your new search service. We will need some information about your search service to fill in the "Azure Search variables" section in the SetupAzureCognitiveSearchService.ipynb notebook, which is in the AzureCognitiveSearchService directory.  Open the notebook for details on how to do this and copy those values into the first code cell, but don't run the notebook yet (you will need to update skillset.json first).  
 
-Before running the notebook, you will also need to change the 4 TODOs in the skillset.json (which is also located in the AzureCognitiveSearchService folder).  Open skillset.json, search for "TODO", and replace each instance with the following:
+Before running the notebook, you will also need to change the TODOs in the skillset.json (which is also located in the AzureCognitiveSearchService folder).  Open skillset.json, search for "TODO", and replace each instance with the following:
 
 1. __Invoke TA Health Extraction custom skill URI:__ this value should be "https://" plus the value from the "Get Function Url" for the InvokeHealthEntityExtraction function that you noted down earlier
 2. __Cognitive Services key:__ create a new Cognitive Services key in the [Azure portal](https://portal.azure.com/#create/Microsoft.CognitiveServicesAllInOne) using the same subscription, location, and resource group that you did for your Azure search service.  Click "Create" and after the resource is ready, click it.  Click "Keys and Endpoint" in the left-hand sidebar.  Copy the Key 1 value into this TODO.  
 3. __Knowledge Store connection string:__ use the value that you noted down earlier of the connection string to the knowledgeStore container in your Azure blob storage.  It should be of the format "DefaultEndpointsProtocol=https;AccountName=YourValueHere;AccountKey=YourValueHere;EndpointSuffix=core.windows.net".  
 
 Finally, you are all set to go into the SetupAzureCognitiveSearchService.ipynb notebook and run it.  This notebook will call REST endpoints on the search service that you have deployed in Azure to setup the search data sources, index, indexers, and skillset.  
-
-
 ___
 
 ### Task 9 - Deploy Web Application
 
 To deploy the web application you will need the following steps:
 
-* [Create an Azure App Service](#step-1---create-an-app-services)
-* [Update Web App Settings file](#step-2---update-web-app-settings-file)
-* [Create Github Secret and Update Github Actions File](#step-3---create-github-secret-and-update-github-actions-file)
-* [Commit changes to your repository](#)
+1. [Create an Azure App Service](#step-1---create-an-app-services)
+2. [Update Web App Settings file](#step-2---update-web-app-settings-file)
+3. [Create Github Secret and Update Github Actions File](#step-3---create-github-secret-and-update-github-actions-file)
+4. [Commit changes to your repository](#)
 
 #### Step 1 - Create an App Services
 
