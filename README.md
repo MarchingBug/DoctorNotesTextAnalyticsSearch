@@ -17,6 +17,20 @@ This repository contains:
 
 Give doctors the ability to extract and find meaningful patient data from their notes, to either have a larger view for a patient, to find patterns or for research.  How can we use AI to better understand to achieve this goal?  In this code, we take a sample set of fake doctor notes and apply several machine learning techniques (name entity recognition of medical terms, finding semantically similar words, and knowledge graphs) medical professionals better find and make sense of the research they need.  
 
+## What you will learn
+
+If you are new or new-ish to Azure, at the end of this project you will have a better understanding of the following concepts:
+
+- Azure Storage Accounts
+- Azure Cognitive Services
+- Azure SQL Server
+- Azure Functions
+- Azure App Services
+- Advanced Azure Cognitive Search
+- Azure Container Instances
+- Jupiter Notebooks
+- Github Actions
+
 ## Architecture
 
 Data is pulled from an Azure SQL Database. The main indexer runs data in json format through a skillset which reshapes the data and extracts medical entities, and puts the enriched data in the search index, it also saves Azure Text for Analytics json to the database render marked-up text.
@@ -69,12 +83,10 @@ If you are new to Azure,a resource group is a container that holds related resou
 ___
 
 ### Task 3 - Import database package
-
-Upload the file doctor-note-poc-bacpac located under the folder dat-files to a storage account in your subscription
-
-Import the database package to a serverless database, for more information on how to do this click [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/database-import?view=azuresql&tabs=azure-powershell)
-
-If you have never done this, follow the steps:
+ Upload the file doctor-note-poc-bacpac located under the folder data-files to a storage account in your subscription.
+  Import the database package to a serverless database, for more information on how to do this click [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/database-import?view=azuresql&tabs=azure-powershell).
+<details>
+  <summary>   If you have never done this expand this section for detailed steps  </summary>
 
 Click on create new resource and search for SQL Server (logical server) and select that option
 
@@ -139,9 +151,11 @@ Select * from DoctorNotes
 
 ![Create a SQL Database resourse](images/sql-14.png)
 
+</details>
+
 ___
 
-### Task 4 - Implement Text Analytics For Health
+### Task 4 - Implement Text Analytics For Health Container
 
 Our implementation uses the [Text Analytics for Health](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/how-tos/text-analytics-for-health?tabs=ner) container for medical entity extraction.  Once you have received access, you will need to set up the container as instructed in their README.
 
@@ -153,7 +167,7 @@ Then, you will need to update the InvokeHealthEntityExtraction Azure function wi
 
 Specifically, in the InvokeHealthEntityExtraction\InvokeHealthEntityExtraction folder:
 
-* Download the [umls_concept_dict.pickle file](https://covid19storagejen.blob.core.windows.net/public/umls_concept_dict.pickle) and save to this directory InvokeHealthEntityExtraction\InvokeHealthEntityExtraction (the same directory as __init__.py) so it will deploy with the Azure function.  
+* Download the [umls_concept_dict.pickle file](https://cspocdatalake.blob.core.windows.net/doctor-notes-poc/umls_concept_dict.pickle?sv=2021-10-04&st=2022-12-30T16%3A13%3A51Z&se=2030-12-31T16%3A13%3A00Z&sr=b&sp=r&sig=wMGVvwqvKfdn01DxJ%2FlsdmGYSCxEiH6retRjzMaIbTo%3D) and save to this directory InvokeHealthEntityExtraction\InvokeHealthEntityExtraction (the same directory as __init__.py) so it will deploy with the Azure function.  
 
 *After* this action is complete, you can deploy the InvokeHealthEntityExtraction Azure function.  One easy way to deploy an Azure function is using Visual Studio Code.  You can [install VS Code](https://code.visualstudio.com/Download) and then follow some of the instructions at [this link](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp):
 
@@ -171,6 +185,7 @@ To update function's configuration parameters, in the Azure portal navigate to y
 
 > __Add the following parameters and their corresponding values:__
 
+```text
     text_analytics_container_url: YOUR_CONTAINER_URL
 
     AZURE_STORAGE_CONNECTION_STRING: YOUR_STORAGE_ACCOUNT_CONNECTION_STRING
@@ -189,6 +204,8 @@ To update function's configuration parameters, in the Azure portal navigate to y
 
     sql_user_password
 
+```
+
 Next Click "Functions" in the left-hand sidebar.  Then click on each function name,  click "Get Function Url" at the top of the page.  Copy that value to a text editor for each function; you will need it later.  
 
 ### Task 6 - Create a Storage Account
@@ -197,14 +214,11 @@ Create a storage account and get the connection string, you will need this conne
 
 > __Once your storage account is created, navigate to the storage account and create a container named doctor-notes-search__
 
-
 ___
 
 ### Task 7 - Create Azure search service
 
-Create a new Azure search service using the Azure portal at <https://portal.azure.com/#create/Microsoft.Search>.  Select your Azure subscription.  Use the previously created resource group. You will need a globally-unique URL as the name of your search service (try something like "doctonotes-search-" plus your name, organization, or numbers).  Finally, choose a nearby location to host your search service - please remember the location that you chose, as your Cognitive Services instance will need to be based in the same location.  Click "Review + create" and then (after validation) click "Create" to instantiate and deploy the service. 
-
-> You will need to co
+Create a new Azure search service using the Azure portal at <https://portal.azure.com/#create/Microsoft.Search>.  Select your Azure subscription.  Use the previously created resource group. You will need a globally-unique URL as the name of your search service (try something like "doctonotes-search-" plus your name, organization, or numbers).  Finally, choose a nearby location to host your search service - please remember the location that you chose, as your Cognitive Services instance will need to be based in the same location.  Click "Review + create" and then (after validation) click "Create" to instantiate and deploy the service.
 
 ___
 
@@ -220,7 +234,6 @@ Before running the notebook, you will also need to change the 4 TODOs in the ski
 
 Finally, you are all set to go into the SetupAzureCognitiveSearchService.ipynb notebook and run it.  This notebook will call REST endpoints on the search service that you have deployed in Azure to setup the search data sources, index, indexers, and skillset.  
 
-[def]: https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview
 
 ___
 
@@ -228,10 +241,10 @@ ___
 
 To deploy the web application you will need the following steps:
 
-* Create an Azure App Service
-* Update Web App Settings file
-* Create Github Secret and Update Github Actions File
-* Commit changes to your repository
+* [Create an Azure App Service](#step-1---create-an-app-services)
+* [Update Web App Settings file](#step-2---update-web-app-settings-file)
+* [Create Github Secret and Update Github Actions File](#step-3---create-github-secret-and-update-github-actions-file)
+* [Commit changes to your repository](#)
 
 #### Step 1 - Create an App Services
 
@@ -256,9 +269,10 @@ Open the file and copy the content to a text file
 
 #### Step 2 - Update Web App Settings file
 
-Navigate to the web-app/Cognitive.UI folder and open the appsettings.json file and change the following parameters: 
+Navigate to the web-app/Cognitive.UI folder and open the appsettings.json file and change the following parameters:
 
-```  "SearchServiceName": "YOUR_COGNITIVE_SEARCH_SERVICE_NAME",
+```json
+  "SearchServiceName": "YOUR_COGNITIVE_SEARCH_SERVICE_NAME",
   "SearchApiKey": "YOUR_COGNITIVE_SEARCH_SERVICE_NAME",
   "SearchIndexName": "azuresql-index",
   "SearchIndexerName": "azure-sql-indexer",
@@ -280,3 +294,14 @@ Next navigate to the workflow file located at .github/workflows/DoctorNotesSearc
 #### Step 4 - Commit changes to Github
 
 Commit your changes to the main branch of the forked Github repository, then navigate to Actions to confirm the Application has been published.
+
+## Credits
+
+This project was enhanced and changed from the [Covid-19 Search](https://github.com/liamca/covid19search) repository by [Liam Cavanagh](https://github.com/liamca).
+
+Markup text for healthcare analytics code was provided by [Oren Barnea](https://github.com/barneaoren)
+
+[Sign in]:<https://portal.azure.com/>
+[60 day trial]:https://signup.microsoft.com/signup?sku=a403ebcc-fae0-4ca2-8c8c-7a907fd6c235&email&ru=https%3A%2F%2Fapp.powerbi.com%3Fpbi_source%3Dweb%26redirectedFromSignup%3D1%26noSignUpCheck%3D1
+
+
