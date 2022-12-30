@@ -422,11 +422,11 @@ namespace CognitiveSearch.UI
             s_containerAddresses[1] = _configuration.GetSection("StorageContainerAddress2")?.Value.ToLower();
             s_containerAddresses[2] = _configuration.GetSection("StorageContainerAddress3")?.Value.ToLower();
             int s_containerAddressesLength = s_containerAddresses.Length;
-            if (String.Equals(s_containerAddresses[1], defaultContainerUriValue))
+            if (String.Equals(s_containerAddresses[1], defaultContainerUriValue) || String.Equals(s_containerAddresses[1], ""))
             {
                 s_containerAddressesLength--;
             }
-            if (String.Equals(s_containerAddresses[2], defaultContainerUriValue))
+            if (String.Equals(s_containerAddresses[2], defaultContainerUriValue) || String.Equals(s_containerAddresses[2], ""))
             {
                 s_containerAddressesLength--;
             }
