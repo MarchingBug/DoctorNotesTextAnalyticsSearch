@@ -5,10 +5,10 @@ on:
     - master
 env:
   AZURE_WEBAPP_NAME: DoctorNotesSearchPoc
-  AZURE_WEBAPP_PACKAGE_PATH: CognitiveSearch.UI\published
+  AZURE_WEBAPP_PACKAGE_PATH: web-app\CognitiveSearch.UI\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 5.0.x
-  WORKING_DIRECTORY: CognitiveSearch.UI
+  WORKING_DIRECTORY: web-app\CognitiveSearch.UI
 jobs:
   build:
     runs-on: windows-latest
@@ -19,7 +19,10 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+      run: 
+           dotnet restore "${{ env.WORKING_DIRECTORY }}"
+           dotnet restore web-app
+      
     - name: Build
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test
