@@ -267,7 +267,7 @@ To deploy the web application you will need the following steps:
 1. [Create an Azure App Service](#step-1---create-an-app-services)
 2. [Update Web App Settings file](#step-2---update-web-app-settings-file)
 3. [Create Github Secret and Update Github Actions File](#step-3---create-github-secret-and-update-github-actions-file)
-4. [Commit changes to your repository](#)
+4. [Commit changes to your repository](#step-4---enable-the-workflow-and-commit-changes-to-github)
 
 #### Step 1 - Create an App Services
 
@@ -314,7 +314,11 @@ If the secret does not exist, please create it.
 
 Next navigate to the workflow file located at .github/workflows/DoctorNotesSearchPoc.yml and replace the value for the variable *__AZURE_WEBAPP_NAME__* to match the name of the Azure Service App you just created.
 
-#### Step 4 - Commit changes to Github
+#### Step 4 - Enable the workflow and Commit changes to Github
+
+In your GitHub repository, navigate to Actions, select the workflow "Build and Deploy .Net app...." and click on enable this workflow option to your right
+
+![enable-worlflow](images/enable-action.png)
 
 Commit your changes to the main branch of the forked Github repository, then navigate to Actions to confirm the Application has been published.
 
@@ -326,5 +330,3 @@ Markup text for healthcare analytics code was provided by [Oren Barnea](https://
 
 [Sign in]:<https://portal.azure.com/>
 [60 day trial]:https://signup.microsoft.com/signup?sku=a403ebcc-fae0-4ca2-8c8c-7a907fd6c235&email&ru=https%3A%2F%2Fapp.powerbi.com%3Fpbi_source%3Dweb%26redirectedFromSignup%3D1%26noSignUpCheck%3D1
-
-
