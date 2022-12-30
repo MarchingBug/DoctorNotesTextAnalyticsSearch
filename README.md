@@ -44,6 +44,8 @@ Programming Tools needed:
 
 ## Setup Steps
 
+> Before you begin, fork this repository to your own github account then download it to your local drive
+
 1. [Azure account - login or create one](#task-1---azure-account)
 2. [Create a resource group](#task-2---create-a-resource-group)
 3. [Import database package](#task-3---import-database-package)
@@ -217,3 +219,30 @@ Finally, you are all set to go into the SetupAzureCognitiveSearchService.ipynb n
 ___
 
 ### Task 9 - Deploy Web Application
+
+This repository includes a workflow to publish the web application. But first you need to [create an App Service](https://learn.microsoft.com/en-us/azure/app-service/environment/using#create-an-app) with the following configuration:
+
+* Unique name for your application like DoctorNotesApp
+* Publish: Code
+* Runtime stack: .Net 6(LTS)
+* Operating System: windows
+* Region: the same region you selected for your resource group
+* Create a new Windows plan if you dont have one
+
+> You can change the default size of your sizing plan to a development plan if you want to, but performance would be slower
+
+![Application Configuration](images/AppServiceConfiguration.png)
+
+Once the App service is provisioned, navigate to the App and download the publish profile
+
+![Get App Profile](images/get-publish-profile.png)
+
+Open the file and copy the content to a text file
+
+Next nagivate to your [Github repository secrets](https://docs.github.com/en/codespaces/managing-codespaces-for-your-organization/managing-encrypted-secrets-for-your-repository-and-organization-for-github-codespaces) change the value for the secret named *__DoctorNotesSearchPoc_A28D__* copy and paste the content of the publish profile you just downloaded to the value box.
+
+If the secret does not exist, please create it.
+
+Next navigate to the workflow file located at .github/workflows/DoctorNotesSearchPoc.yml and replace the value for the variable *__AZURE_WEBAPP_NAME__* to match the name of the Azure Service App you just created.
+
+Commit your changes to the main branch of your Github repository, then navigate to Actions to confirm the Application has been published.
