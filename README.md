@@ -6,30 +6,35 @@
 
 Source Code Repository for the Cognitive Search based [Doctor Notes with Text Analytics Search App](https://doctornotessearchpoc.azurewebsites.net/)
 
-If you simply want to show this code in a running instance, feel free to use <https://doctornotessearchpoc.azurewebsites.net/>.  Otherwise, you can follow the [setup instructions](#setup) below to recreate your own instance in your Azure subscription.  
-
-This repository contains:
-
-* AzureCognitiveSearchService: The components to set up the Cognitive Search service
-* InvokeHealthEntityExtraction: An Azure Function to call the Text Analytics for Health container which is invoked as a custom skill
+If you simply want to show this code in a running instance, feel free to use <https://doctornotessearchpoc.azurewebsites.net/>.  Otherwise, you can follow the [setup instructions](#setup-steps) below to recreate your own instance in your Azure subscription.  
 
 ## Purpose
 
 Give doctors the ability to extract and find meaningful patient data from their notes, to either have a larger view for a patient, to find patterns or for research.  How can we use AI to better understand to achieve this goal?  In this code, we take a sample set of fake doctor notes and apply several machine learning techniques (name entity recognition of medical terms, finding semantically similar words, and knowledge graphs) medical professionals better find and make sense of the research they need.  
 
+## Assets
+
+This repository containes to following assets and code:
+
+* InvokeHealthEntityExtraction: An Azure Function to call the Text Analytics for Health container which is invoked as a custom skill in Azure Cognitive Services Skill-Sets
+* Azure SQL Database
+* AzureCognitiveSearchService: Jupyter notebook that will create data source, index, skillsets and indexer used by Azure Cognitive Search
+* Web Application
+* Github actions configuration to deploy the web application
+
 ## What you will learn
 
 If you are new or new-ish to Azure, at the end of this project you will have a better understanding of the following concepts:
 
-- Azure Storage Accounts
-- Azure Cognitive Services
-- Azure SQL Server
-- Azure Functions
-- Azure App Services
-- Advanced Azure Cognitive Search
-- Azure Container Instances
-- Jupiter Notebooks
-- Github Actions
+* Azure Storage Accounts
+* Azure Cognitive Services
+* Azure SQL Server
+* Azure Functions
+* Azure App Services
+* Advanced Azure Cognitive Search
+* Azure Container Instances
+* Jupiter Notebooks
+* Github Actions
 
 ## Architecture
 
@@ -55,6 +60,10 @@ Programming Tools needed:
 
 * VS Code to edit Azure Functions
 * Visual Studio to edit web-app (this is only if you want to customize the application)
+
+## Expected time to completion
+
+This project should take about 4 hours to complete
 
 ## Setup Steps
 
