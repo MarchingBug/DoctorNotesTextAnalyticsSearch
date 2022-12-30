@@ -194,11 +194,17 @@ Next Click "Functions" in the left-hand sidebar.  Then click on each function na
 ### Task 6 - Create a Storage Account
 
 Create a storage account and get the connection string, you will need this connection string for the next steps. If you have never done that, [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) is the documentation to do it.
+
+> __Once your storage account is created, navigate to the storage account and create a container named doctor-notes-search__
+
+
 ___
 
 ### Task 7 - Create Azure search service
 
-Create a new Azure search service using the Azure portal at <https://portal.azure.com/#create/Microsoft.Search>.  Select your Azure subscription.  Use the previously created resource group. You will need a globally-unique URL as the name of your search service (try something like "doctonotes-search-" plus your name, organization, or numbers).  Finally, choose a nearby location to host your search service - please remember the location that you chose, as your Cognitive Services instance will need to be based in the same location.  Click "Review + create" and then (after validation) click "Create" to instantiate and deploy the service.  
+Create a new Azure search service using the Azure portal at <https://portal.azure.com/#create/Microsoft.Search>.  Select your Azure subscription.  Use the previously created resource group. You will need a globally-unique URL as the name of your search service (try something like "doctonotes-search-" plus your name, organization, or numbers).  Finally, choose a nearby location to host your search service - please remember the location that you chose, as your Cognitive Services instance will need to be based in the same location.  Click "Review + create" and then (after validation) click "Create" to instantiate and deploy the service. 
+
+> You will need to co
 
 ___
 
@@ -220,6 +226,15 @@ ___
 
 ### Task 9 - Deploy Web Application
 
+To deploy the web application you will need the following steps:
+
+* Create an Azure App Service
+* Update Web App Settings file
+* Create Github Secret and Update Github Actions File
+* Commit changes to your repository
+
+#### Step 1 - Create an App Services
+
 This repository includes a workflow to publish the web application. But first you need to [create an App Service](https://learn.microsoft.com/en-us/azure/app-service/environment/using#create-an-app) with the following configuration:
 
 * Unique name for your application like DoctorNotesApp
@@ -239,10 +254,29 @@ Once the App service is provisioned, navigate to the App and download the publis
 
 Open the file and copy the content to a text file
 
+#### Step 2 - Update Web App Settings file
+
+Navigate to the web-app/Cognitive.UI folder and open the appsettings.json file and change the following parameters: 
+
+```  "SearchServiceName": "YOUR_COGNITIVE_SEARCH_SERVICE_NAME",
+  "SearchApiKey": "YOUR_COGNITIVE_SEARCH_SERVICE_NAME",
+  "SearchIndexName": "azuresql-index",
+  "SearchIndexerName": "azure-sql-indexer",
+  "StorageAccountName": "YOUR_STORAGE_ACCOUNT_NAME",
+  "StorageAccountKey": "YOUR_STORAGE_ACCOUNT_NAME",
+  "StorageContainerAddress": "https://YOUR_STORAGE_ACCOUNT_NAME.blob.core.windows.net/doctor-notes-search" 
+```
+
+> Please make sure the index and indexer names match those created on your Cognitive Search Service
+
+#### Step 3 - Create Github Secret and update Github Actions File
+
 Next nagivate to your [Github repository secrets](https://docs.github.com/en/codespaces/managing-codespaces-for-your-organization/managing-encrypted-secrets-for-your-repository-and-organization-for-github-codespaces) change the value for the secret named *__DoctorNotesSearchPoc_A28D__* copy and paste the content of the publish profile you just downloaded to the value box.
 
 If the secret does not exist, please create it.
 
 Next navigate to the workflow file located at .github/workflows/DoctorNotesSearchPoc.yml and replace the value for the variable *__AZURE_WEBAPP_NAME__* to match the name of the Azure Service App you just created.
 
-Commit your changes to the main branch of your Github repository, then navigate to Actions to confirm the Application has been published.
+#### Step 4 - Commit changes to Github
+
+Commit your changes to the main branch of the forked Github repository, then navigate to Actions to confirm the Application has been published.
