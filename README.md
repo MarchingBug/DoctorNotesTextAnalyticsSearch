@@ -15,7 +15,7 @@ This repository contains:
 
 ## Purpose
 
-Many doctors would like to be able to search patient notes to extract and find meaningful patient data, find patterns or for research.  How can we use AI to better understand to achieve this goal?  In this code, we take a sample set of fake doctor notes and apply several machine learning techniques (name entity recognition of medical terms, finding semantically similar words, and knowledge graphs) medical professionals better find and make sense of the research they need.  
+Give doctors the ability to extract and find meaningful patient data from their notes, to either have a larger view for a patient, to find patterns or for research.  How can we use AI to better understand to achieve this goal?  In this code, we take a sample set of fake doctor notes and apply several machine learning techniques (name entity recognition of medical terms, finding semantically similar words, and knowledge graphs) medical professionals better find and make sense of the research they need.  
 
 ## Architecture
 
@@ -23,21 +23,36 @@ Data is pulled from an Azure SQL Database. The main indexer runs data in json fo
 
 ![Doctor Notes/Text Analytics Search Architecture](images/TextAnalyticsDemoDocumentation.jpg)
 
-## Skills and Assumptions
+## Services used for this solution
 
+Listed below are the services needed for this solution, if you don't have an azure subscription, you can create a free one. If you already have an subscription, please make sure that your administration has granted access to the services below:
 
+* Azure Subscription
+* [Azure SQL Serverless](https://learn.microsoft.com/en-us/azure/azure-sql/database/serverless-tier-overview?view=azuresql)
+* [Cognitive Services](https://learn.microsoft.com/en-us/azure/cognitive-services/what-are-cognitive-services)
+* [Azure Container Instances](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview)
+* [Text Analytics for Health](https://learn.microsoft.com/en-us/azure/cognitive-services/language-service/text-analytics-for-health/overview?tabs=ner)
+* [Azure Functions](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview)
+* [Storage Account](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview)
+* [Azure Cognitive Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search)
+* [Azure App Services](https://learn.microsoft.com/en-us/azure/app-service/overview)
 
-## Setup Tasks
+Programming Tools needed:
 
-1. Azure account - login or create one
-2. Create a resource group
-3. Import database package
-4. Implement Text Analytics For Health
-5. Deploy InvokeHealthEntityExtraction Azure function
-6. Create a Storage Account
-7. Create Azure search service
-8. Run Notebook to configure Indexes and Data for Azure Search
-9. Deploy Website
+* VS Code to edit Azure Functions
+* Visual Studio to edit web-app (this is only if you want to customize the application)
+
+## Setup Steps
+
+1. [Azure account - login or create one](#task-1---azure-account)
+2. [Create a resource group](#task-2---create-a-resource-group)
+3. [Import database package](#task-3---import-database-package)
+4. [Implement Text Analytics For Health](#task-4---implement-text-analytics-for-health)
+5. [Deploy InvokeHealthEntityExtraction Azure function](#task-5---deploy-invokehealthentityextraction-azure-function)
+6. [Create a Storage Account](#task-6---create-a-storage-account)
+7. [Create Azure search service](#task-7---create-azure-search-service)
+8. [Run Notebook to configure Indexes and Data for Azure Search](#task-8---run-notebooks-to-create-indexes-on-azure-search)
+9. [Deploy Website](#task-9---deploy-web-application)
 
 ### Task 1 - Azure Account
 
@@ -196,3 +211,9 @@ Before running the notebook, you will also need to change the 4 TODOs in the ski
 3. __Knowledge Store connection string:__ use the value that you noted down earlier of the connection string to the knowledgeStore container in your Azure blob storage.  It should be of the format "DefaultEndpointsProtocol=https;AccountName=YourValueHere;AccountKey=YourValueHere;EndpointSuffix=core.windows.net".  
 
 Finally, you are all set to go into the SetupAzureCognitiveSearchService.ipynb notebook and run it.  This notebook will call REST endpoints on the search service that you have deployed in Azure to setup the search data sources, index, indexers, and skillset.  
+
+[def]: https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview
+
+___
+
+### Task 9 - Deploy Web Application
