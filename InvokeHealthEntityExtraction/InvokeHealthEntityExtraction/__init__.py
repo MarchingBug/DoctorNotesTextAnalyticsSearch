@@ -44,16 +44,16 @@ azure_storage_connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
 logging.info(f'AZURE_STORAGE_CONNECTION_STRING:{azure_storage_connection_string}')
  
 #server = os.environ["sql_server_name"]
-logging.info(f'sql_server_name:{server}')
+#logging.info(f'sql_server_name:{server}')
  
 #database = os.environ["sql_server_db_name"]
-logging.info(f'sql_server_db_name:{database}')
+#logging.info(f'sql_server_db_name:{database}')
 
 #username = os.environ["sql_user_name"]
-logging.info(f'sql_user_name:{username}')  
+#logging.info(f'sql_user_name:{username}')  
 
 #password = os.environ["sql_user_password"]
-logging.info(f'sql_user_name:{password}')  
+#logging.info(f'sql_user_name:{password}')  
 
 
 """
@@ -399,31 +399,31 @@ def get_final_json_content(json_content,recordId):
     final_content = json.dumps(parsed_content)
     return final_content
        
-def save_json_to_db (final_content,recordId):  
+# def save_json_to_db (final_content,recordId):  
     
     
-    try:    
+#     try:    
           
-        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
-        cnxn.setdecoding(pyodbc.SQL_CHAR, encoding='latin1')
-        cnxn.setencoding('latin1')
-        cursor = cnxn.cursor()
+#         cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+#         cnxn.setdecoding(pyodbc.SQL_CHAR, encoding='latin1')
+#         cnxn.setencoding('latin1')
+#         cursor = cnxn.cursor()
         
-        sql = "{CALL UpdateTextAnalyticsJson (?,?)}"
-        params = (int(recordId), final_content)
-        cursor.execute(sql, params)     
+#         sql = "{CALL UpdateTextAnalyticsJson (?,?)}"
+#         params = (int(recordId), final_content)
+#         cursor.execute(sql, params)     
         
-        cursor.commit()
-        cursor.close()
-        cnxn.close()
-        return final_content
+#         cursor.commit()
+#         cursor.close()
+#         cnxn.close()
+#         return final_content
     
-    except Exception as err:       
-            logging.error(str(err))
-            return (
-                {                
-                "errors": [ { "message": "error save_json_to_db  e: " + {err} }  ]
-                })
+#     except Exception as err:       
+#             logging.error(str(err))
+#             return (
+#                 {                
+#                 "errors": [ { "message": "error save_json_to_db  e: " + {err} }  ]
+#                 })
     
         
            
