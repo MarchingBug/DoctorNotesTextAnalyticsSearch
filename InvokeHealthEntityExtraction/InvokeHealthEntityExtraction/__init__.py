@@ -21,32 +21,38 @@ import re
 from collections import defaultdict
 import pyodbc
 
+
+
+
 # Global configuration
 max_sentences = 15
 ta_credentials = ""
 ta_endPoint = ""
 
-# ta_credentials = os.environ["text_analytics_key"]
+#ta_credentials = os.environ["text_analytics_key"]
+#logging.info(f'text_analytics_key:{ta_credentials}')
 # logging.info(f'text_analytics_key:{ta_credentials}')
 # ta_endPoint =  os.environ["text_analytics_endpoint"]
 # logging.info(f'text_analytics_endpoint:{ta_endPoint}')
 
+
+
 ta_url = os.environ["text_analytics_container_url"]
-logging.info(f'text_analytics_key:{ta_url}')
+logging.info(f'text_analytics_url:{ta_url}')
 
 azure_storage_connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
 logging.info(f'AZURE_STORAGE_CONNECTION_STRING:{azure_storage_connection_string}')
  
-server = os.environ["sql_server_name"]
+#server = os.environ["sql_server_name"]
 logging.info(f'sql_server_name:{server}')
  
-database = os.environ["sql_server_db_name"]
+#database = os.environ["sql_server_db_name"]
 logging.info(f'sql_server_db_name:{database}')
 
-username = os.environ["sql_user_name"]
+#username = os.environ["sql_user_name"]
 logging.info(f'sql_user_name:{username}')  
 
-password = os.environ["sql_user_password"]
+#password = os.environ["sql_user_password"]
 logging.info(f'sql_user_name:{password}')  
 
 
@@ -83,57 +89,42 @@ def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
 def compose_response(json_data, context):
     values = json.loads(json_data)["values"]
     
-    # Load UMLS dictionary
-    logging.info("Function directory is " + context.function_directory)
-    if os.path.isfile(os.path.join(context.function_directory, "umls_concept_dict.pickle")):
-        logging.info("The umls_concept_dict.pickle file was found.")
-    else:
-        logging.warn("The umls_concept_dict.pickle file was not found.")
-    with open(os.path.join(context.function_directory, "umls_concept_dict.pickle"), "rb") as handle:
-        umls_concept_dict = pickle.load(handle)
-    logging.info("UMLS dictionary loaded")
+    try: 
+        # Load UMLS dictionary
+        logging.info("Function directory is " + context.function_directory)
+        if os.path.isfile(os.path.join(context.function_directory, "umls_concept_dict.pickle")):
+            logging.info("The umls_concept_dict.pickle file was found.")
+        else:
+            logging.info("The umls_concept_dict.pickle file was not found.")
+        logging.info("about to load UMLS dictionary")
+        with open(os.path.join(context.function_directory, "umls_concept_dict.pickle"), "rb") as handle:
+            umls_concept_dict = pickle.load(handle)
+        logging.info("UMLS dictionary loaded")
 
-    # Prepare the output before the loop
-    results = {}
-    results["values"] = []
+        # Prepare the output before the loop
+        results = {}
+        results["values"] = []
+    except Exception as e:
+        logging.info(str(e))
+        return (
+            {
+            "errors": [ { "message": "Failure during compose_response e: " + str(e)}   ]
+            })      
     
     for value in values:
-        output_record = transform_value(value, umls_concept_dict)
-        if output_record != None:
-            results["values"].append(output_record)
+            output_record = transform_value(value, umls_concept_dict,ta_url= os.environ["text_analytics_container_url"] )
+            if output_record != None:
+                results["values"].append(output_record)
     return json.dumps(results, ensure_ascii=False)
-
-   
- 
-## Call Text Analytics for Health  
-def call_text_analytics(documents):
-  
-   credential = AzureKeyCredential(ta_credentials)
-   text_analytics_client = TextAnalyticsClient(endpoint=ta_endPoint, credential=credential)   
-   values = json.loads(documents)["documents"]
-   try:
-      poller = text_analytics_client.begin_analyze_healthcare_entities(values)
-      result = poller.result()
-
-      docs = [doc for doc in result if not doc.is_error]        
     
   
-   except:
-        exc_tuple = sys.exc_info()
-        logging.error(str(exc_tuple))
-        return (
-            {           
-            "errors": [ { "message": "Failure during call_text_analytics e: " + str(exc_tuple)}   ]
-            })  
-        
-   return docs
 
 ##split note-text in case it is longer than allowed
 def chunkstring(string, length):
     return (string[0+i:length+i] for i in range(0, len(string), length))
 
 ## Perform an operation on a record
-def transform_value(value, umls_concept_dict):
+def transform_value(value, umls_concept_dict,ta_url):
     try:
         recordId = value["recordId"]
     except AssertionError  as error:
@@ -180,17 +171,24 @@ def transform_value(value, umls_concept_dict):
                         })
              id_counter += 1
         
-        logging.info("Documents: " + json.dumps(documents, indent = 4))
-        docs = requests.post(url = ta_url, json = documents).json()  
-        HTML_CONTENT=  save_json_to_db(docs,recordId)       
+        if not ta_url.endswith("/"):
+            ta_url += "/"
 
-    except:
-        exc_tuple = sys.exc_info()
-        logging.error(str(exc_tuple))
+        url_to_call = ta_url + "text/analytics/v3.1/entities/health"
+
+        logging.info("Documents: " + json.dumps(documents, indent = 4))
+        docs = requests.post(url = url_to_call, json = documents).json()  
+        HTML_CONTENT=  get_final_json_content(docs,recordId)
+        #save_json_to_db(HTML_CONTENT,recordId)       
+
+    
+    except Exception as e:
+        message = f"transform_value e: {str(e)}"
+        logging.error(str(message))
         return (
             {
             "recordId": recordId,
-            "errors": [ { "message": "Failure during health entity extraction for record " + recordId + ".  e: " + str(exc_tuple)}   ]
+            "errors": [ { message}   ]
             })
 
     # Process output into format to be accepted by a custom skill
@@ -380,9 +378,8 @@ def save_json_content(json_content,recordId):
                 "recordId": recordId,
                 "errors": [ { "message": "Failure while saving text analytics output for record " + recordId + ".  e: " + {err} }  ]
                 })
-       
-def save_json_to_db (json_content,recordId):
-    
+        
+def get_final_json_content(json_content,recordId):
     relations = []
     entities = []
     
@@ -400,6 +397,10 @@ def save_json_to_db (json_content,recordId):
         }
     
     final_content = json.dumps(parsed_content)
+    return final_content
+       
+def save_json_to_db (final_content,recordId):  
+    
     
     try:    
           
@@ -416,9 +417,14 @@ def save_json_to_db (json_content,recordId):
         cursor.close()
         cnxn.close()
         return final_content
-    except:
-        exc_tuple = sys.exc_info()
-        logging.error(str(exc_tuple))    
+    
+    except Exception as err:       
+            logging.error(str(err))
+            return (
+                {                
+                "errors": [ { "message": "error save_json_to_db  e: " + {err} }  ]
+                })
+    
         
            
     
