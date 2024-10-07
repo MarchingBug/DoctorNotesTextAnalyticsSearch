@@ -216,21 +216,9 @@ To update function's configuration parameters, in the Azure portal navigate to y
 ```text
     text_analytics_container_url: YOUR_CONTAINER_URL
 
-    AZURE_STORAGE_CONNECTION_STRING: YOUR_STORAGE_ACCOUNT_CONNECTION_STRING
+    cognitive_services_enpoint: YOUR_ALL_IN_ONE_COGNITIVE_SERVICES_END_POINT
 
-    text_analytics_container_url: YOUR_CONTAINER_URL
-
-    text_analytics_container_url: YOUR_CONTAINER_URL
-
-    AZURE_STORAGE_CONNECTION_STRING: YOUR_STORAGE_ACCOUNT_CONNECTION_STRING
-    
-    sql_server_name:  YOUR_SQL_SERVER_NAME
-
-    sql_server_db_name
-
-    sql_user_name
-
-    sql_user_password
+    cognitive_services_key: YOUR_ALL_IN_ONE_COGNITIVE_SERVICES_END_API_KEY    
 
 ```
 
