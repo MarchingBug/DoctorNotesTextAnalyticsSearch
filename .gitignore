@@ -353,3 +353,6 @@ MigrationBackup/
 AzureCognitiveSearchService/.ipynb_checkpoints/
 InvokeHealthEntityExtraction/InvokeHealthEntityExtraction/*.pickle
 
+
+.python_packages
+.venv
