@@ -334,8 +334,56 @@
   "cognitiveServices": {
     "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
     "description": "/subscriptions/c417ee31-c5ee-47d7-922d-4f184a7cbdbe/resourceGroups/doctor-notes-poc/providers/Microsoft.CognitiveServices/accounts/fsi-tsp-all-in-one",
-    "key": "41f1ca764adb4de0af8ce531637b1389"
+    "key": null
   },
-  "knowledgeStore": null,  
+  "knowledgeStore": {
+    "storageConnectionString": "ResourceId=/subscriptions/c417ee31-c5ee-47d7-922d-4f184a7cbdbe/resourceGroups/doctor-notes-poc/providers/Microsoft.Storage/storageAccounts/doctor-notes-poc",
+    "identity": {
+      "type": "systemAssigned"
+    },   
+    "projections": [
+      {
+        "tables": [
+          {
+            "tableName": "azuresqlSkillsetDocument",
+            "referenceKeyName": null,
+            "generatedKeyName": "Documentid",
+            "source": "/document/tableprojection",
+            "sourceContext": null,
+            "inputs": []
+          },
+          {
+            "tableName": "azuresqlSkillsetKeyPhrases",
+            "referenceKeyName": null,
+            "generatedKeyName": "KeyPhrasesid",
+            "source": null,
+            "sourceContext": "/document/tableprojection/keyPhrases/*",
+            "inputs": [
+              {
+                "name": "keyphrases",
+                "source": "/document/tableprojection/keyPhrases/*",
+                "sourceContext": null,
+                "inputs": []
+              }
+            ]
+          }
+        ],
+        "objects": [
+          {
+            "storageContainer": "cognitive-search-files",
+            "referenceKeyName": null,
+            "generatedKeyName": "cognitive-search-filesKey",
+            "source": "/document/objectprojection",
+            "sourceContext": null,
+            "inputs": []
+          }
+        ],
+        "files": []
+      }
+    ],
+    "parameters": {
+      "synthesizeGeneratedKeyName": true
+    }
+  },  
   "encryptionKey": null
 }
