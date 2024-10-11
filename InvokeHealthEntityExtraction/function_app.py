@@ -1,30 +1,23 @@
 import azure.functions as func
 import logging
 
+import logging
+
 import json
 
 import logging
 import os
 import pickle
 import sys
-import time
 import requests
 
-from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+#from azure.identity import DefaultAzureCredential
+#from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 from azure.core.credentials import AzureKeyCredential
-from azure.ai.textanalytics import TextAnalyticsClient, HealthcareEntityRelation
+from azure.ai.textanalytics import TextAnalyticsClient
 
-
-import re
-from collections import defaultdict
-
-# Global configuration
-max_sentences = 15
-ta_credentials = ""
-ta_endPoint = ""
-
+# Load environment variables
 ta_url = os.environ["text_analytics_container_url"]
 logging.info(f'text_analytics_url:{ta_url}')
 
@@ -38,16 +31,13 @@ azure_storage_connection_string = ""
 
 text_analytics_client = TextAnalyticsClient(endpoint=cognitive_services_enpoint, credential=AzureKeyCredential(cognitive_services_key))
 
-#use only if you are saving the output to blob storage
-#azure_storage_connection_string = os.environ["AZURE_STORAGE_CONNECTION_STRING"]
-#logging.info(f'AZURE_STORAGE_CONNECTION_STRING:{azure_storage_connection_string}')
- 
+
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
-
+@app.function_name(name="InvokeHealthEntityExtraction")
 @app.route(route="InvokeHealthEntityExtraction")
 def InvokeHealthEntityExtraction(req: func.HttpRequest,context: func.Context) -> func.HttpResponse:
-    logging.info("Python InvokeHealthEntityExtraction function processed a request.")
+    logging.info('Python HTTP trigger function processed a request.')
 
     try:
         body = json.dumps(req.get_json())
@@ -60,15 +50,17 @@ def InvokeHealthEntityExtraction(req: func.HttpRequest,context: func.Context) ->
     
     if body:
         result = compose_response(body, context)
-        return func.HttpResponse(body=result, mimetype="application/json")
+        #check if the result is an error message
+        if "errors" in result:            
+            return func.HttpResponse("an error has occurred, check all files are included", status_code=500)
+        else:            
+         return func.HttpResponse(body=result, mimetype="application/json")
     else:
         return func.HttpResponse(
              "Invalid body",
              status_code=400
         )
-
-
-
+    
 def process_AI_retrievals(noteText):
 
     try:
@@ -82,7 +74,7 @@ def process_AI_retrievals(noteText):
         Entities = call_cognitive_services(documents,language,"Entities")
         keyPhrases = call_cognitive_services(documents,language,"KeyPhrases")
         Language = {"languageCode" : language}
-        result = {"PII": PII, "Entities": Entities, "KeyPhrases": keyPhrases, "Language": Language}
+        result = {"PII": PII, "Entities": Entities, "KeyPhrases": keyPhrases['keyphrases'], "Language": Language}        
         return result
 
     
@@ -160,9 +152,13 @@ def compose_response(json_data, context):
         # Load UMLS dictionary
         logging.info("Function directory is " + context.function_directory)
         if os.path.isfile(os.path.join(context.function_directory, "umls_concept_dict.pickle")):
-            logging.info("The umls_concept_dict.pickle file was found.")
+            logging.info("The umls_concept_dict.pickle file was found.")            
         else:
             logging.info("The umls_concept_dict.pickle file was not found.")
+            return (
+            {
+            "Error": [ { "message": "The umls_concept_dict.pickle file was found. " } ]
+            }) 
         logging.info("about to load UMLS dictionary")
         with open(os.path.join(context.function_directory, "umls_concept_dict.pickle"), "rb") as handle:
             umls_concept_dict = pickle.load(handle)
@@ -294,7 +290,7 @@ def transform_value(value, umls_concept_dict,ta_url):
             ia_locations= ai_skills["Entities"]["location"]
         
         if ai_skills["KeyPhrases"]:
-            keyphrases = ai_skills["KeyPhrases"]
+            ai_keyphrases = ai_skills["KeyPhrases"]
        
         languageCode = ai_skills["Language"]["languageCode"]
         maskedText = ai_skills["PII"]["maskedtext"]
@@ -310,6 +306,10 @@ def transform_value(value, umls_concept_dict,ta_url):
         #converting ia_locations to a list  
         for location in ia_locations:
             locations.append(location["text"])
+
+        #converting ai_keyphrases to a list
+        for keyphrase in ai_keyphrases:
+            keyphrases.append(keyphrase)
 
 
         # Initialize health entities       
@@ -424,7 +424,8 @@ def transform_value(value, umls_concept_dict,ta_url):
                                    "bodyStructure": BODY_STRUCTURE, "diagnosis": DIAGNOSIS, "conditionQualifier": CONDITION_QUALIFIER, "direction": DIRECTION,
                                    "examinationRelation": EXAMINATION_RELATION, "familyRelation": FAMILY_RELATION, "gender": GENDER, "gene": GENE,
                                    "medicationClass": MEDICATION_CLASS, "medicationName": MEDICATION_NAME, "routeOrMode": ROUTE_OR_MODE, "symptomOrSign": SYMPTOM_OR_SIGN,
-                                   "variant": VARIANT, "TextAnalyticsForDisplay":HTML_CONTENT})
+                                   "variant": VARIANT, "TextAnalyticsForDisplay":HTML_CONTENT, "maskedText": maskedText,"people": persons, "organizations": organizations,
+                                    "locations": locations, "keyphrases": keyphrases,"language": languageCode})
 
 
 
@@ -451,11 +452,11 @@ def transform_value(value, umls_concept_dict,ta_url):
                 "variant": VARIANT,
                 "TextAnalyticsForDisplay":HTML_CONTENT,
                 "maskedText": maskedText,
-                "persons": persons,
+                "people": persons,
                 "organizations": organizations,
                 "locations": locations,
                 "keyphrases": keyphrases,
-                "languageCode": languageCode
+                "language": languageCode
                  }
             })
 
@@ -466,38 +467,8 @@ def transform_value(value, umls_concept_dict,ta_url):
             {
             "recordId": recordId,
             "errors": [ { "message": "Failure while processing output for record " + recordId + ".  e: " + str(exc_tuple) }  ]
-            })
-
-   
-    
-def save_json_content(json_content,recordId):
-    
-        import uuid
-        # Instantiate a new BlobServiceClient using a connection string _ set chunk size to 1MB
-        from azure.storage.blob import BlobServiceClient, BlobBlock
-        blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
-
-        # Instantiate a new ContainerClient
-        container_client = blob_service_client.get_container_client("note_analytics")
-        # Generate 4MB of data
-        data = str(json_content)
-
-        try:
-            
-            file_name = recordId + "_text_analytics.json"
-            # Instantiate a new source blob client
-            source_blob_client = container_client.get_blob_client(file_name)
-            # Upload content to block blob
-            source_blob_client.upload_blob(data, blob_type="BlockBlob",overwrite=True)
-       
-        except Exception as err:       
-            logging.error(str(err))
-            return (
-                {
-                "recordId": recordId,
-                "errors": [ { "message": "Failure while saving text analytics output for record " + recordId + ".  e: " + {err} }  ]
-                })
-        
+            })   
+           
 def get_final_json_content(json_content,recordId):
     relations = []
     entities = []
@@ -517,4 +488,5 @@ def get_final_json_content(json_content,recordId):
     
     final_content = json.dumps(parsed_content)
     return final_content
-       
+
+    

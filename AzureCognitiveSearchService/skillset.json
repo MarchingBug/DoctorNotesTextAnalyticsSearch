@@ -2,7 +2,7 @@
   "@odata.context": "https://doctor-notes-poc-2.search.windows.net/$metadata#skillsets/$entity",
   "@odata.etag": "\"0x8DCE4BBB0D509FE\"",
   "name": "azuresql-skillset",
-  "description": "Skillset created from the portal. skillsetName: azuresql-skillset; contentField: noteText; enrichmentGranularity: document; knowledgeStoreStorageAccount: doctocnoteshealthentitye;",
+  "description": "Skillset created from the portal. skillsetName: azuresql-skillset; contentField: noteText; enrichmentGranularity: document; ",
   "skills": [
     {
       "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
@@ -73,36 +73,6 @@
         {
           "name": "SigningProviderId",
           "source": "/document/SigningProviderId"
-        },
-        {
-          "name": "keyPhrases",
-          "source": "/document/noteText/keyphrases/*"
-        },
-        {
-          "name": "languageCode",
-          "source": "/document/language"
-        },
-        {
-          "name": "Entities",
-          "sourceContext": "/document/noteText/entities/*",
-          "inputs": [
-            {
-              "name": "Entity",
-              "source": "/document/noteText/entities/*/name"
-            },
-            {
-              "name": "EntityType",
-              "source": "/document/noteText/entities/*/type"
-            },
-            {
-              "name": "EntitySubType",
-              "source": "/document/noteText/entities/*/subType"
-            },
-            {
-              "name": "Url",
-              "source": "/document/noteText/entities/*/wikipediaUrl"
-            }
-          ]
         }
       ],
       "outputs": [
@@ -181,37 +151,7 @@
         {
           "name": "SigningProviderId",
           "source": "/document/SigningProviderId"
-        },
-        {
-          "name": "keyPhrases",
-          "source": "/document/noteText/keyphrases/*"
-        },
-        {
-          "name": "languageCode",
-          "source": "/document/language"
-        },
-        {
-          "name": "Entities",
-          "sourceContext": "/document/noteText/entities/*",
-          "inputs": [
-            {
-              "name": "Entity",
-              "source": "/document/noteText/entities/*/name"
-            },
-            {
-              "name": "EntityType",
-              "source": "/document/noteText/entities/*/type"
-            },
-            {
-              "name": "EntitySubType",
-              "source": "/document/noteText/entities/*/subType"
-            },
-            {
-              "name": "Url",
-              "source": "/document/noteText/entities/*/wikipediaUrl"
-            }
-          ]
-        }
+        }      
       ],
       "outputs": [
         {
@@ -225,7 +165,7 @@
       "name": "InvokeTAHealthExtraction",
       "description": "Custom skill to call the Microsoft Text Analytics Health entity extraction",
       "context": "/document/noteId",
-      "uri": "https://doctor-notes-tha-1.azurewebsites.net/api/InvokeHealthEntityExtraction?code=oNv80eEVVDLgldAKr_v_yUPKivVD1kpNtCqClReAtjUGAzFupZlsiw%3D%3D",
+      "uri": "https://<TODO_HEALTHEXTRACTION_FUNCTION_APP_NAME>.net/api/InvokeHealthEntityExtraction?code=<TODO_FUNCTION_KEY>",
       "httpMethod": "POST",
       "timeout": "PT30S",
       "batchSize": 2,
@@ -308,7 +248,7 @@
         },
         {
           "name": "persons",
-          "targetName": "people"
+          "targetName": "persons"
         },
         {
           "name": "organizations",
@@ -319,11 +259,11 @@
           "targetName": "locations"
         },
         {
-          "name": "keyPhrases",
+          "name": "keyphrases",
           "targetName": "keyphrases"
         },
         {
-          "name": "languageCode",
+          "name": "language",
           "targetName": "language"
         }
       ],
@@ -331,11 +271,7 @@
       "authIdentity": null
     }
   ],
-  "cognitiveServices": {
-    "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
-    "description": "/subscriptions/c417ee31-c5ee-47d7-922d-4f184a7cbdbe/resourceGroups/doctor-notes-poc/providers/Microsoft.CognitiveServices/accounts/fsi-tsp-all-in-one",
-    "key": "41f1ca764adb4de0af8ce531637b1389"
-  },
+  "cognitiveServices":null, 
   "knowledgeStore": null,  
   "encryptionKey": null
 }

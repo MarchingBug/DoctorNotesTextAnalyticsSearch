@@ -1,5 +1,5 @@
 {
-  "@odata.context": "https://doctor-notes-poc.search.windows.net/$metadata#indexers/$entity",
+  "@odata.context": "https://ddoctor-notes-poc-2.search.windows.net/$metadata#indexers/$entity",
   "@odata.etag": "\"0x8DAE45C99EDD67C\"",
   "name": "azuresql-indexer",
   "description": "",
@@ -24,23 +24,23 @@
   ],
   "outputFieldMappings": [
     {
-      "sourceFieldName": "/document/noteText/people",
-      "targetFieldName": "people"
+      "sourceFieldName": "/document/noteId/persons",
+      "targetFieldName": "persons"
     },
     {
-      "sourceFieldName": "/document/noteText/organizations",
+      "sourceFieldName": "/document/noteId/organizations",
       "targetFieldName": "organizations"
     },
     {
-      "sourceFieldName": "/document/noteText/locations",
+      "sourceFieldName": "/document/noteId/locations",
       "targetFieldName": "locations"
     },
     {
-      "sourceFieldName": "/document/noteText/keyphrases",
+      "sourceFieldName": "/document/noteId/keyphrases",
       "targetFieldName": "keyphrases"
     },
     {
-      "sourceFieldName": "/document/language",
+      "sourceFieldName": "/document/noteId/language",
       "targetFieldName": "language"
     },
     {

@@ -13,7 +13,7 @@
       "indexAnalyzer": null,
       "searchAnalyzer": null,
       "analyzer": "standard.lucene",
-      "normalizer": null,
+      
       "synonymMaps": []
     },
     {
@@ -257,7 +257,7 @@
       "synonymMaps": []
     },
     {
-      "name": "people",
+      "name": "persons",
       "type": "Collection(Edm.String)",
       "searchable": true,
       "filterable": false,
@@ -598,7 +598,7 @@
         "creatingProvider",
         "signingProvider",
         "bodyStructure",
-        "people",
+        "persons",
         "organizations",
         "locations",
         "keyphrases",
