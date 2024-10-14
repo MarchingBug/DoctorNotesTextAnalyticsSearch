@@ -424,7 +424,7 @@ def transform_value(value, umls_concept_dict,ta_url):
                                    "bodyStructure": BODY_STRUCTURE, "diagnosis": DIAGNOSIS, "conditionQualifier": CONDITION_QUALIFIER, "direction": DIRECTION,
                                    "examinationRelation": EXAMINATION_RELATION, "familyRelation": FAMILY_RELATION, "gender": GENDER, "gene": GENE,
                                    "medicationClass": MEDICATION_CLASS, "medicationName": MEDICATION_NAME, "routeOrMode": ROUTE_OR_MODE, "symptomOrSign": SYMPTOM_OR_SIGN,
-                                   "variant": VARIANT, "TextAnalyticsForDisplay":HTML_CONTENT, "maskedText": maskedText,"people": persons, "organizations": organizations,
+                                   "variant": VARIANT, "TextAnalyticsForDisplay":HTML_CONTENT, "maskedText": maskedText,"persons": persons, "organizations": organizations,
                                     "locations": locations, "keyphrases": keyphrases,"language": languageCode})
 
 
