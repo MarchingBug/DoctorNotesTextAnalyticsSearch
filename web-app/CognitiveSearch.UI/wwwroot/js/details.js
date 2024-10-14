@@ -333,7 +333,7 @@ function GetMetadataHTML(result) {
                             value = Base64Decode(value);
                     }
 
-                    if (key === "people" || key === "organizations" || key === "locations") {
+                    if (key === "persons" || key === "organizations" || key === "locations") {
                         value = SpaceArray(value);
                     }
 
