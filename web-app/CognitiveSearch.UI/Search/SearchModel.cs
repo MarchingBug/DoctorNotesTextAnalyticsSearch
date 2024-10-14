@@ -13,7 +13,7 @@ namespace CognitiveSearch.UI
             // Add UI facets here in order
             "creatingProvider",
             "signingProvider",
-            "people",
+            "persons",
             "organizations",
             "locations",
             "bodyStructure",
